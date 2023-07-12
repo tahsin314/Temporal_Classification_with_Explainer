@@ -12,6 +12,7 @@ from transformers import DistilBertTokenizer,DistilBertForSequenceClassification
 import shap
 from matplotlib import pyplot as plt
 
+
 df = pd.read_csv(f"{data_dir}/train.csv")
 df.fillna("0", inplace=True)
 df = df.reset_index(drop=True)
@@ -23,7 +24,7 @@ model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-unc
 model = model.to(device)
 optimizer = optim.AdamW(model.parameters(),lr=learning_rate)
 loss = nn.CrossEntropyLoss()
-
+print(model)
 train_data, val_data, train_label, val_label = train_test_split(data, label,
                                                     test_size=0.30,
                                                     random_state=2024,
