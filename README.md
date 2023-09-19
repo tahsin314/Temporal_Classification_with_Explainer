@@ -22,6 +22,10 @@ The current implementation has a basic transformer archietecture now. I am using
 - Parameter Tuning
 - Logging results using `Tensorboard` or `Wandb`
 
+# Models
+- Mini Trnasformer
+- 1D Resnet
+
 ## Metric
 - ROC, 
 
