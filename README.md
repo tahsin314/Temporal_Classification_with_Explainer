@@ -3,12 +3,12 @@ In this repository, I'll explore the Sequential Data modelling using deep learin
 
 The current implementation has a basic transformer archietecture now. I am using a very small timeseries dataset now. The performance is not sartisfactory at the moment and the model tends to overfit a lot.  
 
-**Please see the visualizer notebook for details**
+**You can see my result visualization [here](https://wandb.ai/tahsin/Accelerometer%20Project/).**
 
 ## How to run:
 1. Run `conda env create -f environment.yml` to create a conda environment.
-2. Download the `Natural Language Processing with Disaster Tweets` dataset from [here](https://www.kaggle.com/competitions/nlp-getting-started/data). 
-3. Activate your conda environment and run `train.py`. It will train a model for some epochs and save the latest model as `model.pth` file
+2. Add your data filepath to the `config.py` file. 
+3. Activate your conda environment and run `train.py`. It will train a model for some epochs and save the latest model as `model.pt` file
 4. Open the `visualizer.ipynb` notebook and run the cells.
 
 ## TODO List
