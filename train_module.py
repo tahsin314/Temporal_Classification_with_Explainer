@@ -5,7 +5,9 @@ import torch
 import wandb
 
 
-def train_val_class(epoch, dataloader, model, criterion, optimizer, mixed_precision=True, device='cuda', train=True):
+def train_val_class(epoch, dataloader, class_names, model, 
+					criterion, optimizer, mixed_precision=True, 
+					device='cuda', train=True):
 	t1 = time.time()
 	running_loss = 0
 	epoch_samples = 0
@@ -55,6 +57,7 @@ def train_val_class(epoch, dataloader, model, criterion, optimizer, mixed_precis
 				print(msg, end= '\r')
 	
 	accuracy = accuracy_score(lab, pred)
+
 	# false_positive_rate, true_positive_rate, thresolds = roc_curve(lab, pred)
 	# plot_confusion_matrix(pred, lab, [0, 1])
 	if train: 
@@ -62,6 +65,9 @@ def train_val_class(epoch, dataloader, model, criterion, optimizer, mixed_precis
 		wandb.log({"Train Accuracy": accuracy, "Epoch": epoch})
 	else: 
 		stage='validation'
+		wandb.log({"conf_mat" : wandb.plot.confusion_matrix(probs=None,
+                        y_true=lab, preds=pred,
+                        class_names=class_names)})
 		wandb.log({"Validation Accuracy": accuracy, "Epoch": epoch})
 	msg = f'{stage} Loss: {running_loss/epoch_samples:.4f} \n {stage} ROC_AUC: {accuracy:.4f}'
 	print(msg)

@@ -5,18 +5,19 @@ import torch
 from torch.utils.data import DataLoader
 from torch.nn import CrossEntropyLoss
 from torch.optim import Adam
-from config import congif_params
+from config import config_params
 from AccelerometerDataset import AccelerometerDataset
-from model import AccelerometerModel
+from models.mini_transformer import AccelerometerModel
+from models.resnet import resnet1d
 from train_module import train_val_class
 import wandb
 
 wandb.init(
     project="Accelerometer Project",
-    config=congif_params
+    config=config_params
 )
 
-for key, value in congif_params.items():
+for key, value in config_params.items():
     if isinstance(value, str):
         exec(f"{key} = '{value}'")
     else:
@@ -57,6 +58,7 @@ test_dataset = AccelerometerDataset(X_test, y_test)
 test_dl = DataLoader(test_dataset, batch_size=bs, shuffle=True, num_workers=2)
 
 model = AccelerometerModel(dim=d_model, head_size=num_heads)
+model = resnet1d(3, len(label_id))
 wandb.watch(model)
 model = model.to(device)
 citerion = CrossEntropyLoss(reduction='sum')
@@ -79,8 +81,10 @@ for epoch in range(0, n_epochs):
     torch.cuda.empty_cache()
     print(gc.collect())
 
-    train_loss, train_acc = train_val_class(epoch, train_dl, model, citerion, optim, mixed_precision=True, device='cuda', train=True)
-    valid_loss, valid_acc = train_val_class(epoch, val_dl, model, citerion, optim, mixed_precision=True, device='cuda', train=False)
+    train_loss, train_acc = train_val_class(epoch, train_dl, label_id, 
+                                            model, citerion, optim, mixed_precision=True, device='cuda', train=True)
+    valid_loss, valid_acc = train_val_class(epoch, val_dl, label_id, 
+                                            model, citerion, optim, mixed_precision=True, device='cuda', train=False)
     train_losses.append(train_loss)
     valid_losses.append(valid_loss)
     # train_rocs.append(train_roc_auc)
@@ -96,5 +100,6 @@ for epoch in range(0, n_epochs):
     'best_loss':valid_loss, 'best_acc':valid_acc, 'epoch':epoch}
     # best_valid_loss, best_valid_roc = save_model(valid_loss, valid_roc_auc, best_valid_loss, best_valid_roc, best_state, os.path.join(model_dir, model_name))
     print("#"*20)
+
 torch.save(model.state_dict(), 'model.pt')
 wandb.finish()

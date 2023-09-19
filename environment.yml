@@ -312,7 +312,7 @@ dependencies:
       - triton==2.0.0
       - uri-template==1.2.0
       - urllib3==2.0.3
-      - wandb==0.15.8
+      - wandb==0.15.10
       - wcwidth==0.2.6
       - webcolors==1.13
       - webencodings==0.5.1
