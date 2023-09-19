@@ -1,0 +1,39 @@
+2023-09-19 20:21:24,910 INFO    MainThread:18437 [wandb_setup.py:_flush():76] Current SDK version is 0.15.8
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_setup.py:_flush():76] Configure stats pid to 18437
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_setup.py:_flush():76] Loading settings from /home/tahsin/.config/wandb/settings
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_setup.py:_flush():76] Loading settings from /home/tahsin/Github/Temporal_Classification_with_Explainer/wandb/settings
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'train.py', 'program': '/home/tahsin/Github/Temporal_Classification_with_Explainer/train.py'}
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_init.py:_log_setup():507] Logging user logs to /home/tahsin/Github/Temporal_Classification_with_Explainer/wandb/run-20230919_202124-iuak9dmi/logs/debug.log
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_init.py:_log_setup():508] Logging internal logs to /home/tahsin/Github/Temporal_Classification_with_Explainer/wandb/run-20230919_202124-iuak9dmi/logs/debug-internal.log
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_init.py:init():547] calling init triggers
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_init.py:init():554] wandb.init called with sweep_config: {}
+config: {'filepath': 'data/delirium.npz', 'd_model': 4, 'num_heads': 1, 'lr': 0.003, 'eps': 1e-05, 'weight_decay': 0.0001, 'n_epochs': 20, 'bs': 8, 'SEED': 2023}
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_init.py:init():596] starting backend
+2023-09-19 20:21:24,911 INFO    MainThread:18437 [wandb_init.py:init():600] setting up manager
+2023-09-19 20:21:24,912 INFO    MainThread:18437 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2023-09-19 20:21:24,913 INFO    MainThread:18437 [wandb_init.py:init():606] backend started and connected
+2023-09-19 20:21:24,916 INFO    MainThread:18437 [wandb_init.py:init():697] updated telemetry
+2023-09-19 20:21:24,926 INFO    MainThread:18437 [wandb_init.py:init():730] communicating run to backend with 60.0 second timeout
+2023-09-19 20:21:25,834 INFO    MainThread:18437 [wandb_run.py:_on_init():2180] communicating current version
+2023-09-19 20:21:26,080 INFO    MainThread:18437 [wandb_run.py:_on_init():2189] got version response upgrade_message: "wandb version 0.15.10 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-09-19 20:21:26,080 INFO    MainThread:18437 [wandb_init.py:init():781] starting run threads in backend
+2023-09-19 20:21:39,158 WARNING MainThread:18437 [wandb_init.py:init():1169] interrupted
+Traceback (most recent call last):
+  File "/home/tahsin/miniconda3/envs/tahsin/lib/python3.8/site-packages/wandb/sdk/wandb_init.py", line 1147, in init
+    run = wi.init()
+  File "/home/tahsin/miniconda3/envs/tahsin/lib/python3.8/site-packages/wandb/sdk/wandb_init.py", line 792, in init
+    run_start_result = run_start_handle.wait(timeout=30)
+  File "/home/tahsin/miniconda3/envs/tahsin/lib/python3.8/site-packages/wandb/sdk/lib/mailbox.py", line 283, in wait
+    found, abandoned = self._slot._get_and_clear(timeout=wait_timeout)
+  File "/home/tahsin/miniconda3/envs/tahsin/lib/python3.8/site-packages/wandb/sdk/lib/mailbox.py", line 130, in _get_and_clear
+    if self._wait(timeout=timeout):
+  File "/home/tahsin/miniconda3/envs/tahsin/lib/python3.8/site-packages/wandb/sdk/lib/mailbox.py", line 126, in _wait
+    return self._event.wait(timeout=timeout)
+  File "/home/tahsin/miniconda3/envs/tahsin/lib/python3.8/threading.py", line 558, in wait
+    signaled = self._cond.wait(timeout)
+  File "/home/tahsin/miniconda3/envs/tahsin/lib/python3.8/threading.py", line 306, in wait
+    gotit = waiter.acquire(True, timeout)
+KeyboardInterrupt

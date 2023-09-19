@@ -1,10 +1,11 @@
 import time
-from sklearn.metrics import roc_auc_score, roc_curve
+from sklearn.metrics import accuracy_score
 
 import torch
+import wandb
 
 
-def train_val_class(epoch, dataloader, model, optimizer, mixed_precision=True, device='cuda', train=True):
+def train_val_class(epoch, dataloader, model, criterion, optimizer, mixed_precision=True, device='cuda', train=True):
 	t1 = time.time()
 	running_loss = 0
 	epoch_samples = 0
@@ -17,17 +18,17 @@ def train_val_class(epoch, dataloader, model, optimizer, mixed_precision=True, d
 	else:
 		model.eval()
 		print("Initiating val phase ...")
-	for idx, (input_ids, attention_mask, labels) in enumerate(dataloader):
+	for idx, (data, labels) in enumerate(dataloader):
 		with torch.set_grad_enabled(train):
-			input_ids = input_ids.to(device)
-			attention_mask = attention_mask.to(device)
-			labels = labels.to(device)
-			epoch_samples += len(input_ids)
+			data = data.to(device).to(dtype=torch.float32)
+			labels = labels.to(device).to(dtype=torch.long)
+
+			epoch_samples += len(data)
 		#   optimizer.zero_grad()
 			with torch.cuda.amp.autocast(mixed_precision):
-				outputs = model(input_ids,attention_mask=attention_mask,labels=labels)
-				loss = outputs.loss
-				logits = outputs.logits
+				outputs = model(data)
+				loss = criterion(outputs, labels)
+				
 				running_loss += loss.item()
 
 				if train:
@@ -43,19 +44,25 @@ def train_val_class(epoch, dataloader, model, optimizer, mixed_precision=True, d
 
 				elapsed = int(time.time() - t1)
 				eta = int(elapsed / (idx+1) * (len(dataloader)-(idx+1)))
-				pred.extend(torch.argmax(logits, dim=1).detach().cpu().numpy())
+				pred.extend(torch.argmax(outputs, dim=1).detach().cpu().numpy())
 				lab.extend(labels.cpu().numpy())
 				if train:
 					msg = f"Epoch: {epoch+1} Progress: [{idx}/{len(dataloader)}] loss: {(running_loss/epoch_samples):.4f} Time: {elapsed}s ETA: {eta} s"
+					wandb.log({"Train Loss": running_loss/epoch_samples, "Epoch": epoch})
 				else:
 					msg = f'Epoch {epoch+1} Progress: [{idx}/{len(dataloader)}] loss: {(running_loss/epoch_samples):.4f} Time: {elapsed}s ETA: {eta} s'
-					print(msg, end= '\r')
+					wandb.log({"Validation Loss": running_loss/epoch_samples, "Epoch": epoch})
+				print(msg, end= '\r')
 	
-	roc_auc = roc_auc_score(lab, pred)
-	false_positive_rate, true_positive_rate, thresolds = roc_curve(lab, pred)
+	accuracy = accuracy_score(lab, pred)
+	# false_positive_rate, true_positive_rate, thresolds = roc_curve(lab, pred)
 	# plot_confusion_matrix(pred, lab, [0, 1])
-	if train: stage='train'
-	else: stage='validation'
-	msg = f'{stage} Loss: {running_loss/epoch_samples:.4f} \n {stage} ROC_AUC: {roc_auc:.4f}'
+	if train: 
+		stage='train'
+		wandb.log({"Train Accuracy": accuracy, "Epoch": epoch})
+	else: 
+		stage='validation'
+		wandb.log({"Validation Accuracy": accuracy, "Epoch": epoch})
+	msg = f'{stage} Loss: {running_loss/epoch_samples:.4f} \n {stage} ROC_AUC: {accuracy:.4f}'
 	print(msg)
-	return running_loss/epoch_samples, roc_auc, false_positive_rate, true_positive_rate, thresolds
+	return running_loss/epoch_samples, accuracy

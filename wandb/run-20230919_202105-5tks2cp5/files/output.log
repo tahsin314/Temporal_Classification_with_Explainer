@@ -1,0 +1,17 @@
+12
+Initiating train phase ...
+
+
+train Loss: 1.8680 [39/40] loss: 1.8680 Time: 20s ETA: 0 ss
+ train ROC_AUC: 0.4702
+Initiating val phase ...
+validation Loss: 1.6285 ] loss: 1.6285 Time: 0s ETA: 0 s
+ validation ROC_AUC: 0.5607
+####################
+Epoch 1 Report:
+Validation Loss: 1.6285 Validation Accuracy: 0.5607
+####################
+0
+Initiating train phase ...
+
+

@@ -1,0 +1,52 @@
+wandb_version: 1
+
+filepath:
+  desc: null
+  value: data/delirium.npz
+d_model:
+  desc: null
+  value: 4
+num_heads:
+  desc: null
+  value: 1
+lr:
+  desc: null
+  value: 0.003
+eps:
+  desc: null
+  value: 1.0e-05
+weight_decay:
+  desc: null
+  value: 0.0001
+n_epochs:
+  desc: null
+  value: 20
+bs:
+  desc: null
+  value: 8
+SEED:
+  desc: null
+  value: 2023
+_wandb:
+  desc: null
+  value:
+    python_version: 3.8.16
+    cli_version: 0.15.8
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: true
+    start_time: 1695133284.913396
+    t:
+      1:
+      - 1
+      - 5
+      - 53
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.8.16
+      5: 0.15.8
+      8:
+      - 2
+      - 5
