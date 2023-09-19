@@ -1,7 +1,7 @@
 # Temporal_Classification_with_Explainer
 In this repository, I'll explore the Sequential Data modelling using deep learing and their explainability. This repo is an work on progress and requires a lot of cleaning, fine tuning etc. 
 
-Right now, I'm running my experiments on a language classification dataset. The purpose of using a language dataset and model is that, it is easier to understand and visualize. Later, I'll focus on the explainability task of other sequential data types.
+The current implementation has a basic transformer archietecture now. I am using a very small timeseries dataset now. The performance is not sartisfactory at the moment and the model tends to overfit a lot.  
 
 **Please see the visualizer notebook for details**
 
