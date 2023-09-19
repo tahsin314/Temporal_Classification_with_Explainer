@@ -23,14 +23,14 @@ class AccelerometerModel(nn.Module):
     def __init__(self, dim=192, depth=12, head_size=32, **kwargs):
         super().__init__()
         # self.emb = nn.Embedding(4,dim)
-        self.emb = nn.Conv1d(3, 4, 5, 5)
+        self.emb = nn.Conv1d(3, 4, 5, 5) # 
         self.pos_enc = SinusoidalPosEmb(dim)
         self.transformer = nn.TransformerEncoder(
             nn.TransformerEncoderLayer(d_model=dim, nhead=dim//head_size, dim_feedforward=4*dim,
                 dropout=0.1, activation=nn.GELU(), batch_first=True, norm_first=True), depth)
         # self.positional_encoding = PositionalEncoding(dim, 900)
         self.conv2 = nn.Conv1d(4, 1, 5, 5)
-        self.proj_out = nn.Linear(360,15)
+        self.proj_out = nn.Linear(360,3)
     
     def forward(self, x0):
         # mask = x0['mask']

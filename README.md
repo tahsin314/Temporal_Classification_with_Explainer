@@ -21,3 +21,9 @@ The current implementation has a basic transformer archietecture now. I am using
 - Random Seed
 - Parameter Tuning
 - Logging results using `Tensorboard` or `Wandb`
+
+## Metric
+- ROC, 
+
+## Model
+- Resnet, VGGNet (1D)

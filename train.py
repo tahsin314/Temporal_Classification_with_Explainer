@@ -32,13 +32,13 @@ y_col_names = list(dataset['y_col_names'])
 xdemographics = dataset["demographics"]
 X = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))
 
-label_id = list(set(y[:, 0]))
+label_id = list(set(y[:, 2]))
 new_labels = [i for i in range(len(label_id))]
 label_dict = {}
 for i in new_labels:
     label_dict.update({label_id[i]: new_labels[i]})
 
-y = [label_dict[i] for i in y[:, 0]]
+y = [label_dict[i] for i in y[:, 2]]
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu:0'
 
 X_train, X_test, y_train, y_test = train_test_split(
