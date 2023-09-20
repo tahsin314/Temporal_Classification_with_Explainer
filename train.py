@@ -9,12 +9,15 @@ from config import config_params
 from AccelerometerDataset import AccelerometerDataset
 from models.mini_transformer import AccelerometerModel
 from models.resnet import resnet1d
+from models.vgg import VGG1D
+from models.squeezenet import seresnet1d
 from train_module import train_val_class
 import wandb
 
 wandb.init(
     project="Accelerometer Project",
-    config=config_params
+    config=config_params,
+    name=config_params['model_name']
 )
 
 for key, value in config_params.items():
@@ -23,7 +26,6 @@ for key, value in config_params.items():
     else:
         exec(f"{key} = {value}")
 
-# filepath = "data/delirium.npz"
 dataset = np.load(filepath, allow_pickle=True)
 X = dataset["X"]
 y = dataset["y"]
@@ -43,10 +45,10 @@ y = [label_dict[i] for i in y[:, 2]]
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu:0'
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.25, random_state=SEED, stratify=None
+    X, y, test_size=0.25, random_state=SEED, stratify=y
 )
 X_train, X_val, y_train, y_val = train_test_split(
-    X_train, y_train, test_size=0.25, random_state=SEED, stratify=None
+    X_train, y_train, test_size=0.05, random_state=SEED, stratify=y_train
 )
 train_dataset = AccelerometerDataset(X_train, y_train)
 train_dl = DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=2)
@@ -57,8 +59,8 @@ val_dl = DataLoader(val_dataset, batch_size=bs, shuffle=True, num_workers=2)
 test_dataset = AccelerometerDataset(X_test, y_test)
 test_dl = DataLoader(test_dataset, batch_size=bs, shuffle=True, num_workers=2)
 
-model = AccelerometerModel(dim=d_model, head_size=num_heads)
-model = resnet1d(3, len(label_id))
+# model = AccelerometerModel(dim=d_model, head_size=num_heads)
+model = seresnet1d(3, len(label_id))
 wandb.watch(model)
 model = model.to(device)
 citerion = CrossEntropyLoss(reduction='sum')

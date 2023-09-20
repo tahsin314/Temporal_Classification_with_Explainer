@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+from torchviz import make_dot
+from pytorch_model_summary import summary
 
 class ResidualBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1):
@@ -75,3 +77,7 @@ if __name__ == "__main__":
     data = torch.randn(4, 3, 900)
     out = model(data)
     print(out.shape)
+    print(summary(model, data, show_input=False))
+    dot = make_dot(model(data), params=dict(model.named_parameters()))
+    dot.format = 'png'  # You can change the format as needed
+    dot.render('../model_graphs/resnet1D_graph')
