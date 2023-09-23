@@ -56,19 +56,19 @@ def train_val_class(epoch, dataloader, class_names, model,
 					wandb.log({"Validation Loss": running_loss/epoch_samples, "Epoch": epoch})
 				print(msg, end= '\r')
 	
-	accuracy = accuracy_score(lab, pred)
+	# accuracy = accuracy_score(lab, pred)
 
 	# false_positive_rate, true_positive_rate, thresolds = roc_curve(lab, pred)
 	# plot_confusion_matrix(pred, lab, [0, 1])
 	if train: 
 		stage='train'
-		wandb.log({"Train Accuracy": accuracy, "Epoch": epoch})
+		# wandb.log({"Train Accuracy": accuracy, "Epoch": epoch})
 	else: 
 		stage='validation'
-		wandb.log({"conf_mat" : wandb.plot.confusion_matrix(probs=None,
-                        y_true=lab, preds=pred,
-                        class_names=class_names)})
-		wandb.log({"Validation Accuracy": accuracy, "Epoch": epoch})
-	msg = f'{stage} Loss: {running_loss/epoch_samples:.4f} \n {stage} ROC_AUC: {accuracy:.4f}'
+		# wandb.log({"conf_mat" : wandb.plot.confusion_matrix(probs=None,
+        #                 y_true=lab, preds=pred,
+        #                 class_names=class_names)})
+		# wandb.log({"Validation Accuracy": accuracy, "Epoch": epoch})
+	msg = f'{stage} Loss: {running_loss/epoch_samples:.4f}'
 	print(msg)
-	return running_loss/epoch_samples, accuracy
+	return running_loss/epoch_samples, lab, pred
