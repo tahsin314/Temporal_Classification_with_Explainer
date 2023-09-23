@@ -10,7 +10,7 @@ from AccelerometerDataset import AccelerometerDataset
 from train_module import train_val_class
 import wandb
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import f1_score
 import pandas as pd
 from utils import seed_everything, plot_confusion_matrix
 
@@ -60,7 +60,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.05, random_state=SEED, stratify=y
 )
 X_train, X_val, y_train, y_val = train_test_split(
-    X_train, y_train, test_size=0.05, random_state=SEED, stratify=y_train
+    X_train, y_train, test_size=0.35, random_state=SEED, stratify=y_train
 )
 train_dataset = AccelerometerDataset(X_train, y_train)
 train_dl = DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=1)
@@ -105,19 +105,19 @@ for epoch in range(0, n_epochs):
     # train_rocs.append(train_roc_auc)
     # valid_rocs.append(valid_roc_auc)
     # lr_scheduler.step(valid_loss)
-    # val_roc_auc = roc_auc_score(val_lab, val_pred, average='macro')
+    val_f1_score = f1_score(val_lab, val_pred, average='macro')
     print("-"*20)
     print(f"Epoch {epoch+1} Report:")
-    print(f"Validation Loss: {valid_loss :.4f}")
+    print(f"Validation Loss: {valid_loss :.4f} Validation F1 Score : {val_f1_score :.4f}")
     best_state = {'model': model.state_dict(), 
     'optim': optim.state_dict(), 
     # 'scheduler':lr_reduce_scheduler.state_dict(), 
             # 'scaler': scaler.state_dict(),
     'best_loss':valid_loss, 
-    # 'best_roc_auc':val_roc_auc, 
+    'best_f1_score':val_f1_score, 
     'epoch':epoch}
     # best_valid_loss, best_valid_roc = save_model(valid_loss, valid_roc_auc, best_valid_loss, best_valid_roc, best_state, os.path.join(model_dir, model_name))
     print("-"*20)
-    # plot_confusion_matrix(val_lab, val_pred, label_id)
+    plot_confusion_matrix(val_lab, val_pred, label_dict)
     torch.save(model.state_dict(), 'model.pt')
 wandb.finish()

@@ -1,5 +1,4 @@
 import time
-from sklearn.metrics import accuracy_score
 
 import torch
 import wandb
