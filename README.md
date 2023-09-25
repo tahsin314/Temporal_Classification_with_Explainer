@@ -33,13 +33,9 @@ In this repository, I'll explore the Sequential Data modelling using deep learin
 │   ├── mini_transformer_graph
 │   ├── mini_transformer_graph.png
 │   ├── mobileresnet1D_graph
-│   ├── mobileresnet1D_graph.png
 │   ├── resnet1D_graph
-│   ├── resnet1D_graph.png
 │   ├── seresnet1D_graph
-│   ├── seresnet1D_graph.png
 │   ├── vgg1D_graph
-│   └── vgg1D_graph.png
 ├── models
 │   ├── densenet.py
 │   ├── lstm.py
@@ -51,7 +47,6 @@ In this repository, I'll explore the Sequential Data modelling using deep learin
 ├── README.md
 ├── train_module.py
 ├── train.py
-├── tree.txt
 ├── utils.py
 ├── visualizer.ipynb
 

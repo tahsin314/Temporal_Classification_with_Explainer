@@ -7,7 +7,7 @@ from models.squeezenet import seresnet1d
 ''' You only need to change the config_parmas dictionary'''
 config_params = dict(
     filepath = "data/delirium.npz",
-    model_name = 'resnet',
+    model_name = 'mobilenet',
     num_channels = 3,
     seq_len = 9000,
     num_classes = 3, 
