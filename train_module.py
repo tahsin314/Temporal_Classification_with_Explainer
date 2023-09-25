@@ -49,10 +49,8 @@ def train_val_class(epoch, dataloader, class_names, model,
 				lab.extend(labels.cpu().numpy())
 				if train:
 					msg = f"Epoch: {epoch+1} Progress: [{idx}/{len(dataloader)}] loss: {(running_loss/epoch_samples):.4f} Time: {elapsed}s ETA: {eta} s"
-					wandb.log({"Train Loss": running_loss/epoch_samples, "Epoch": epoch})
 				else:
 					msg = f'Epoch {epoch+1} Progress: [{idx}/{len(dataloader)}] loss: {(running_loss/epoch_samples):.4f} Time: {elapsed}s ETA: {eta} s'
-					wandb.log({"Validation Loss": running_loss/epoch_samples, "Epoch": epoch})
 				print(msg, end= '\r')
 	
 	# accuracy = accuracy_score(lab, pred)

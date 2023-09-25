@@ -7,17 +7,17 @@ from models.squeezenet import seresnet1d
 ''' You only need to change the config_parmas dictionary'''
 config_params = dict(
     filepath = "data/delirium.npz",
-    model_name = 'seresnet',
+    model_name = 'resnet',
     num_channels = 3,
     seq_len = 9000,
     num_classes = 3, 
     dataset = 'Delirium',
     d_model = 128,
     num_heads = 16,
-    lr = 1e-4,
+    lr = 2e-4,
     eps = 1e-5,
     weight_decay = 1e-4,
-    n_epochs = 25,
+    n_epochs = 50,
     bs = 8,
     SEED = 2023,
     )

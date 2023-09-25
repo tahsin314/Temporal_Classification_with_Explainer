@@ -12,6 +12,8 @@ import itertools
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 from tqdm import tqdm as T
+import pandas as pd
+from torch import nn
 # from gradcam.gradcam import GradCAM, GradCAMpp
 
 
@@ -37,3 +39,23 @@ def plot_confusion_matrix(actual_labels, predictions, label_dict):
     plt.xlabel('Predicted')
     plt.savefig('conf.png')
     plt.close()
+
+def model_summary(model, sample_input):
+    # Initialize variables to collect layer information
+    layers_info = []
+    x = sample_input
+    for name, layer in model.named_children():
+        input_shape = tuple(x.shape) if x is not None else None
+        if isinstance(layer, nn.Linear):
+            x = x.view(x.size(0), -1)  # Example reshape operation
+        x = layer(x)
+        output_shape = tuple(x.shape) if hasattr(layer, 'weight') else None
+        num_params = sum(p.numel() for p in layer.parameters())
+        layers_info.append([name, input_shape, output_shape, num_params])
+
+    # Compute the total number of parameters
+    total_params = sum(num_params for _, _, _, num_params in layers_info)
+    columns=["Layer Name", "Input Shape", "Output Shape", "Param #"]
+    # Create a Pandas DataFrame
+    df = pd.DataFrame(layers_info, columns=columns)
+    return df, columns, total_params
