@@ -17,7 +17,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report, f1_score
 import pandas as pd
 from matplotlib import pyplot as plt
-from utils import classification_report_df, save_model, seed_everything, plot_confusion_matrix, model_summary
+from utils import classification_report_df, save_model, seed_everything, plot_confusion_matrix, get_data
 
 wandb.init(
     project="Accelerometer Project",
@@ -33,24 +33,7 @@ for key, value in config_params.items():
 
 seed_everything(SEED)
 
-dataset = np.load(filepath, allow_pickle=True)
-X = dataset["X"]
-y = dataset["y"]
-
-folders=dataset["folders"]
-y_col_names = list(dataset['y_col_names'])
-xdemographics = dataset["demographics"]
-target_outcome = "brain_status"
-# for folder_idx in range(len(folders)):
-folder_idx = len(folders) - 1
-print(f"Splitting with Folder {folder_idx}")
-test_idx = folders[folder_idx][0]
-train_idx = folders[folder_idx][1]
-X_train = X[train_idx]
-X_test = X[test_idx]
-y_train = y[train_idx, y_col_names.index(target_outcome)]
-y_test = y[test_idx, y_col_names.index(target_outcome)]
-
+X_train, X_val, X_test, y_train, y_val, y_test, label_id, label_dict = get_data(filepath, fold, 'acuity')
 # Create Pandas Series for both lists
 series1 = pd.Series(y_train, name='Train')
 series2 = pd.Series(y_test, name='Test')
@@ -64,34 +47,9 @@ plt.title('Element Frequency Histogram for Two Datasets')
 plt.legend()
 plt.savefig('data_hist.png')
 wandb.log({"Data Histogram": wandb.Image("data_hist.png")})
-# df = pd.read_csv('data/train.csv').reset_index(drop=True)
-# label_id = df['Activity']
-# label_encoder = LabelEncoder()
-# encoded_labels = label_encoder.fit_transform(label_id)
-# label_mapping = {label: encoded_label for label, encoded_label in zip(label_id, encoded_labels)}
-# df['Activity']= df['Activity'].apply(lambda x:label_mapping[x])
-# X = df.drop('Activity',axis=1).values
-# X = X[:,:, np.newaxis]
-# y = df['Activity'].values
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
-# X = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))
-label_id = list(set(y[:, 2]))
-new_labels = [i for i in range(len(label_id))]
-label_dict = {}
-for i in new_labels:
-    label_dict.update({label_id[i]: new_labels[i]})
-
-y_train = [label_dict[i] for i in y_train]
-y_test = [label_dict[i] for i in y_test]
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu:0'
 
-# X_train, X_val, y_train, y_val = train_test_split(
-#     X_train, y_train, test_size=0.15, random_state=SEED, stratify=y_train
-# )
-# X_train, X_val, y_train, y_val = train_test_split(
-#     X_train, y_train, test_size=0.35, random_state=SEED, stratify=y_train
-# )
-train_dataset = AccelerometerDataset(X_train, y_train)
+train_dataset = AccelerometerDataset(X_train, y_train, downsampling_factor)
 if sampling_mode is not None:
     sampler = BalanceClassSampler(labels=train_dataset.get_labels(), mode=sampling_mode)
 else: sampler = None
@@ -99,10 +57,10 @@ else: sampler = None
 train_dl = DataLoader(train_dataset, batch_size=bs, sampler=sampler,
                 shuffle=False, num_workers=2)
 
-val_dataset = AccelerometerDataset(X_test, y_test, )
+val_dataset = AccelerometerDataset(X_val, y_val, downsampling_factor)
 val_dl = DataLoader(val_dataset, batch_size=bs, shuffle=True, num_workers=2)
 
-test_dataset = AccelerometerDataset(X_test, y_test)
+test_dataset = AccelerometerDataset(X_test, y_test, downsampling_factor)
 test_dl = DataLoader(test_dataset, batch_size=bs, shuffle=False, num_workers=2)
 
 model = model_params[config_params['model_name']]

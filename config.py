@@ -6,20 +6,21 @@ from models.squeezenet import seresnet1d
 
 ''' You only need to change the config_parmas dictionary'''
 config_params = dict(
-    filepath = "data/outcomedelirium_t10800_delirium_10800wd_10hz_0drop.npz",
-    target_outcome = "brain_status",
+    filepath = "data/outcome_acuity_t14400_v1_14400wd_10hz_0drop.npz",
+    target_outcome = "acuity", #brain_status
     model_name = 'mini_transformer',
-    fold = 3,
+    fold = 1,
     num_channels = 3,
-    seq_len = 108000//3,
-    num_classes = 3, 
-    dataset = 'Delirium',
-    d_model = 128,
+    downsampling_factor = 8,
+    seq_len = 144000,
+    num_classes = 2, 
+    dataset = 'Acuity',
+    d_model = 96,
     num_heads = 16,
     lr = 1e-3,
     eps = 1e-5,
     weight_decay = 1e-5,
-    n_epochs = 50,
+    n_epochs = 10,
     bs = 4,
     sampling_mode = "upsampling",
     SEED = 2023,
@@ -27,7 +28,9 @@ config_params = dict(
 
 model_params = dict(
     mini_transformer = TransfomerModel(num_channels=config_params['num_channels'],
-                        seq_len=config_params['seq_len'],dim=int(config_params['d_model']),
+                        seq_len=config_params['seq_len'],
+                        downsample_factor= int(config_params['downsampling_factor']),
+                        dim=int(config_params['d_model']),
                         head_size=int(config_params['num_heads']),
                         num_classes=int(config_params['num_classes'])),
 

@@ -1,6 +1,7 @@
 import os
 
 from sklearn import metrics
+from sklearn.model_selection import train_test_split
 from config import *
 import random
 import numpy as np
@@ -31,6 +32,62 @@ def seed_everything(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
+
+def get_data(filepath, folder_idx= 4, type='acuity'):
+    dataset = np.load(filepath, allow_pickle=True)
+    X = dataset["X"]
+    y = dataset["y"]
+    y_col_names = list(dataset['y_col_names'])
+    xdemographics = dataset["demographics"]
+    if type == "delirium":
+        label_id = list(set(y[:, 2]))
+        new_labels = [i for i in range(len(label_id))]
+        label_dict = {}
+        for i in new_labels:
+            label_dict.update({label_id[i]: new_labels[i]})
+        folders=dataset["folders"]
+        y_col_names = list(dataset['y_col_names'])
+        xdemographics = dataset["demographics"]
+        target_outcome = "brain_status"
+        # for folder_idx in range(len(folders)):
+        folder_idx = len(folders) - 1
+        print(f"Splitting with Folder {folder_idx}")
+        test_idx = folders[folder_idx][0]
+        train_idx = folders[folder_idx][1]
+        X_train = X[train_idx]
+        X_test = X[test_idx]
+        y_train = y[train_idx, y_col_names.index(target_outcome)]
+        y_test = y[test_idx, y_col_names.index(target_outcome)]
+        X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.33, random_state=42)
+        
+    elif type == "acuity":
+        X = np.vstack(X[:, 0]).reshape(len(X), 144000, -1)
+        label_id = list(set(y[:, 0]))
+        new_labels = [i for i in range(len(label_id))]
+        label_dict = {}
+        for i in new_labels:
+            label_dict.update({label_id[i]: new_labels[i]})
+        target_outcome = "timestamp" # Should be acuity
+        folders=dataset["train_kfold"]
+        print(f"Splitting with Folder {folder_idx}")
+        test_idx = folders[folder_idx][0]
+        train_idx = folders[folder_idx][1]
+        
+        train_idx = folders[folder_idx][0]
+        val_idx = folders[folder_idx][1]
+        test_idx = list(dataset['test'])
+        X_train = X[train_idx]
+        X_val = X[val_idx]
+        X_test = X[test_idx]
+        y_train = y[train_idx, y_col_names.index(target_outcome)]
+        y_train = [label_dict[i] for i in y_train]
+        y_val = y[val_idx, y_col_names.index(target_outcome)]
+        y_val = [label_dict[i] for i in y_val]
+        y_test = y[test_idx, y_col_names.index(target_outcome)]
+        y_test = [label_dict[i] for i in y_test]    
+
+    return X_train, X_val, X_test, y_train, y_val, y_test, label_id, label_dict
+
 
 def plot_confusion_matrix(actual_labels, predictions, label_dict):
     id2label = {v:k for k,v in label_dict.items()}
