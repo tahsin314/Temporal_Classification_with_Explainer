@@ -6,19 +6,22 @@ from models.squeezenet import seresnet1d
 
 ''' You only need to change the config_parmas dictionary'''
 config_params = dict(
-    filepath = "data/delirium.npz",
-    model_name = 'mobilenet',
+    filepath = "data/outcomedelirium_t10800_delirium_10800wd_10hz_0drop.npz",
+    target_outcome = "brain_status",
+    model_name = 'mini_transformer',
+    fold = 3,
     num_channels = 3,
-    seq_len = 9000,
+    seq_len = 108000//3,
     num_classes = 3, 
     dataset = 'Delirium',
     d_model = 128,
     num_heads = 16,
-    lr = 2e-4,
+    lr = 1e-3,
     eps = 1e-5,
-    weight_decay = 1e-4,
+    weight_decay = 1e-5,
     n_epochs = 50,
-    bs = 8,
+    bs = 4,
+    sampling_mode = "upsampling",
     SEED = 2023,
     )
 
