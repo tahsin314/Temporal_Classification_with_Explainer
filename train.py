@@ -72,12 +72,13 @@ citerion = CrossEntropyLoss(reduction='sum')
 wandb.watch(models=model, criterion=citerion, log='parameters')
 data = torch.randn(2, num_channels, seq_len).to(device)
 optim = Adam(model.parameters(), lr=lr)
-lr_scheduler = ReduceLROnPlateau(optim, mode='min', patience=5, factor=0.5, min_lr=1e-6, verbose=True)
+lr_scheduler = ReduceLROnPlateau(optim, mode='max', patience=5, factor=0.5, min_lr=1e-6, verbose=True)
 
 prev_epoch_num = 0
 best_valid_loss = np.inf
 best_state = None
 best_f1 = 0.0
+early_stop_counter = 0
 train_losses = []
 valid_losses = []
 valid_rocs = []
@@ -94,27 +95,37 @@ for epoch in range(0, n_epochs):
     train_losses.append(train_loss)
     valid_losses.append(valid_loss)
     
-    lr_scheduler.step(valid_loss)
+    # lr_scheduler.step(valid_loss)
     train_f1_score = f1_score(train_lab, train_pred, average='macro')
     val_f1_score = f1_score(val_lab, val_pred, average='macro')
+    lr_scheduler.step(val_f1_score)
     wandb.log({"Train Loss": train_loss, "Epoch": epoch})
     wandb.log({"Validation Loss": valid_loss, "Epoch": epoch})
     wandb.log({"Train F1 Score": train_f1_score, "Epoch": epoch})
     wandb.log({"Validation F1 Score": val_f1_score, "Epoch": epoch})
     
-    print("="*50)
+    print("="*70)
     print(f"Epoch {epoch+1} Report:")
     print(f"Validation Loss: {valid_loss :.4f} Validation F1 Score : {val_f1_score :.4f}")
     model_dict = {'model': model.state_dict(), 
     'optim': optim.state_dict(), 
-    # 'scheduler':lr_reduce_scheduler.state_dict(), 
+    'scheduler':lr_scheduler.state_dict(), 
             # 'scaler': scaler.state_dict(),
     'best_loss':valid_loss, 
     'best_f1_score':val_f1_score, 
     'epoch':epoch}
+    if val_f1_score < best_f1:
+        early_stop_counter += 1
+        if early_stop_counter == 15:
+            print("No improvement over val f1 for so long!")
+            print("Early Stopping now!")
+            break
+    else: early_stop_counter = 0
+
     best_valid_loss, best_f1, best_state = save_model(valid_loss, 
                 best_valid_loss, val_f1_score, best_f1, model_dict, 
                 model_name, 'model_dir')
+    
     print("="*70)
     
 best_state = torch.load(f"model_dir/{model_name}_f1.pth")

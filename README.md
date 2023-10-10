@@ -1,29 +1,48 @@
 # Temporal_Classification_with_Explainer
-In this repository, I'll explore the Sequential Data modelling using deep learing and their explainability. This repo is an work on progress and requires a lot of cleaning, fine tuning etc. 
-  
 
-**You can see my result visualization [here](https://wandb.ai/tahsin/Accelerometer%20Project/).**
+This repository is dedicated to the classification of ICU patient conditions using data from accelerometer sensors attached to their bodies. The project focuses on sequential data modeling using deep learning techniques and aims to provide insights into the explainability of the classification results. Please note that this repository is a work in progress and may require additional cleaning, fine-tuning, and further development.
 
-## How to run:
-1. Run `conda env create -f environment.yml` to create a conda environment.
-2. Add your data filepath to the `config.py` file `config_params` dictionary. 
-3. Change `model_name` parameter for the dictionary and set it to one of the `mini_transformer`, `resnet`, `squeezenet`, `mobilenet` and `vgg` to train them.
-4. If you do not have a `wandb` account, open one at [wandb.ai](wandb.ai). You will be provided with a unique code. 
-4. Activate your conda environment and run `train.py`. It will first ask you to log in to your wandb account using the unique code you have. After providing the code, it will start training a model for some epochs, log the results at a given link and save the latest model as `model.pt` file. You can visualize your results at the provided link.  
-5. Open the `visualizer.ipynb` notebook and run the cells.
+You can explore visualizations of the project's results [here](https://wandb.ai/tahsin/Accelerometer%20Project/).
+
+## How to Run the Project
+
+To get started with the project, follow these steps:
+
+1. Create a Conda environment by running the following command:
+
+   ```bash
+   conda env create -f environment.yml
+   ```
+
+2. Open the `config.py` file and add your data file path to the `config_params` dictionary.
+
+3. In the `config.py` file, set the `model_name` parameter to one of the available models: `mini_transformer`, `resnet`, `squeezenet`, `mobilenet`, or `vgg`.
+
+4. If you don't have a [wandb](https://wandb.ai) (Weights and Biases) account, please create one. You will receive a unique code.
+
+5. Activate your Conda environment and run the training script:
+
+   ```bash
+   python train.py
+   ```
+
+   The script will prompt you to log in to your wandb account using the unique code you received. After providing the code, it will start training a model for several epochs, log the results at a given link, and save the latest model as `model.pt`. You can visualize your results at the provided link.
+
+6. Open the `visualizer.ipynb` notebook and run the cells to further explore and analyze the results.
 
 ## Implemented Models
+
 - Resnet
 - Squeezenet
 - Mobilenet
 - VGG
 - Transformer
-- Densenet [Not working]
-- LSTM [Not working]
+- Densenet (Currently not working)
+- LSTM (Currently not working)
 
+## Directory Structure
 
-## Directory Graph
-```
+```plaintext
 .
 ├── AccelerometerDataset.py
 ├── config.py
@@ -49,16 +68,24 @@ In this repository, I'll explore the Sequential Data modelling using deep learin
 ├── train.py
 ├── utils.py
 ├── visualizer.ipynb
-
 ```
 
 ## TODO List
-- Implementation of the following papers:
-  - *Transformer Interpretability Beyond Attention Visualization*
-  - *XAI for Transformers: Better Explanations through Conservative Propagation*
-- Explore sequential data
-- Integrate Pytorch `Captum` for explainability
-- Data augmentation
-- Random Seed
-- Parameter Tuning
-- Logging results using `Tensorboard` or `Wandb`
+
+- Implement research papers:
+  - "Transformer Interpretability Beyond Attention Visualization"
+  - "XAI for Transformers: Better Explanations through Conservative Propagation"
+- Integrate PyTorch `Captum` for explainability.
+- Explore data augmentation techniques.
+- Implement random seed management for reproducibility.
+- Fine-tune model hyperparameters for better performance.
+
+Feel free to contribute to this project or reach out if you have suggestions, bug reports, or feature requests. Your input is valuable to us.
+
+## License
+
+This project is open-source and available under the MIT License.
+
+---
+
+We are continuously working to improve and extend this project. If you have any ideas or recommendations, please share them with us.
